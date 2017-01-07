@@ -5,10 +5,20 @@ A utility to find the spelling of a word you are thinking of but have no idea ho
 This utility is slower than regular spelling suggestion programs, but that is because it is more inventive with its matching. If you are looking for something that is fast or sticks to giving more traditional results, then this is not the utlity for you.
 
 ```
+$ spell amiright
+airtight
+$ spell "am i right"
+millwright
+$ spell asdasdfsadk
+sassafrack
 $ spell asdfasdf
 headfast
-$ spell butthole
-bunghole
+$ spell gfkjhgjkj
+dogfought
+$ spell lksdjfoij
+ladyflies
+$ spell qwerty
+sweety
 ```
 
 ## TODO
