@@ -1,0 +1,17 @@
+.\" Manpage for spell.
+.\" Contact https://github.com/stollcri/ to correct errors or typos.
+.TH man 1 "06 January 2017" "0.1" "spell man page"
+.SH NAME
+spell \- Find the correct spelling of a word
+.SH SYNOPSIS
+spell
+.SH DESCRIPTION
+Give it a bunch of letters and it will tell you which word you are most likely looking for.
+.SH OPTIONS
+The spell command does not take any options.
+.SH SEE ALSO
+bash(1)
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+Christopher Stoll (@stollcri)
