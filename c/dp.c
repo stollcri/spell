@@ -401,40 +401,6 @@ static int dpscore(char *commandstring, char *possibility)
 	return btresults;
 }
 
-char *buildcommand(char *commandstr, char *commandarg, int score)
-{
-	int cmdsize = strlen(commandstr) + 1;
-	int argsize = strlen(commandarg) + 1;
-	int newsize = (cmdsize + argsize + 1);
-	if (score < MINIMUM_GOOD_SCORE) {
-		newsize += 2;
-	}
-	char *result = (char*)malloc(newsize * sizeof(char));
-	// int wildcardused = 0;
-
-	int resultindex = 0;
-	// if (score < MINIMUM_GOOD_SCORE) {
-	// 	result[resultindex] = '#';
-	// 	resultindex = 1;
-	// }
-	for (int cmdindex = 0; cmdindex < cmdsize; ++cmdindex) {
-		// if (commandstr[cmdindex] != '*') {
-			result[resultindex] = commandstr[cmdindex];
-			++resultindex;
-		// } else {
-		// 	if (!wildcardused) {
-		// 		wildcardused = 1;
-		// 		for (int argindex = 0; argindex < argsize; ++argindex) {
-		// 			result[resultindex] = commandarg[argindex];
-		// 			++resultindex;
-		// 		}
-		// 	}
-		// }
-	}
-	result[resultindex] = '\0';
-	return result;
-}
-
 float scorefactor(char *stringa, char *stringb)
 {
 	float result = 0;
