@@ -32,15 +32,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package spell
+package main
 
 import (
+	"fmt"
 )
 
-var DEBUG_PRINT_MATRIX int = 0
+var DEBUG_PRINT_MATRIX int = 1
 var DEBUG_PRINT_ARGPOS int = 0
 var DEBUG_PRINT_ARGVAL int = 0
-var DEBUG_PRINT_SCORES int = 0
+var DEBUG_PRINT_SCORES int = 1
 
 var MOVE_COST int = 0
 var SCORE_MATCH int = 10
@@ -54,30 +55,143 @@ var PENALTY_TRANSPOSE int = -2
 var EXPECTED_BOX_SCORE int =  7
 var MINIMUM_GOOD_SCORE int = 75
 
-func scorefactor(wordA string, wordB string) float64 {
+func scoreFactor(wordA string, wordB string) float64 {
+	result := 0.0
+	lengthA := float64(len(wordA))
+	lengthB := float64(len(wordB))
+	if lengthA > lengthB {
+		if lengthA != 0 {
+			result = 1
+		}
+	} else if lengthA > lengthB {
+		result = lengthB / lengthA
+	} else {
+		result = lengthA / lengthB
+	}
+	return result
+}
+
+func gappedScore(currentxchar string, currentychar string) int {
+	return 1
+}
+
+func characterScore(currentxchar string, currentychar string) int {
+	return 1
+}
+
+func transposescore(currentxchar string, currentychar string) int {
+	return 1
+}
+
+func fillMatrix(xsize int, ysize int, xString string, yString string) []int {
+	currentxchar := ""
+	currentychar := ""
+	gapscore := 0
+	charscore := 0
+	currentindex := 0
+	indexdiag := 0
+	indexleft := 0
+	indexabove := 0
+	dpmatrix := make([]int, xsize * ysize)
+	if DEBUG_PRINT_MATRIX == 1 { fmt.Println("\n", xString, yString) }
+	for y := 0; y < ysize; y++ {
+		for x := 0; x < xsize; x++ {
+			if x > 0 {
+				currentxchar = string([]rune(xString)[x - 1])
+			}
+			if y > 0 {
+				currentychar = string([]rune(yString)[y - 1])
+			}
+
+			// TODO: start both of the above loops at 1
+			// 		 and remove this condition
+			// 		 and remove the print condition below
+			if (x > 0) && (y > 0) {
+				gapscore = gappedScore(currentxchar, currentychar);
+				charscore = characterScore(currentxchar, currentychar);
+
+				currentindex = (y * xsize) + x;
+				indexdiag = ((y - 1) * xsize) + (x - 1);
+				indexleft = (y * xsize) + (x - 1);
+				indexabove = ((y - 1) * xsize) + x;
+
+				// the value of the current pixels is:
+				// - the maximum of:
+				//   - the diagonal value and the current score (there is a series of matches)
+				//   - 0 (just in case all scores are below zero)
+				//   - the above value and the gap score (there is a gap in the matches)
+				//   - the left value and the gap score (there is a gap in the matches)
+				// - minus the cost of movement
+				dpmatrix[currentindex] = max4(
+					dpmatrix[indexdiag] + charscore,
+					0,
+					dpmatrix[indexabove] + gapscore,
+					dpmatrix[indexleft] + gapscore) + MOVE_COST;
+
+				// values above and left are higher than diagonal, suggesting a transpose
+				if ((dpmatrix[indexabove] > dpmatrix[indexdiag]) && (dpmatrix[indexleft] > dpmatrix[indexdiag])) {
+					// give the diagonal the maximum value of the other neighbors
+					dpmatrix[indexdiag] = max(
+						dpmatrix[indexabove],
+						dpmatrix[indexleft])
+					// give current space the value of transposed caharacters, if less than current value
+					dpmatrix[currentindex] = max(
+						dpmatrix[indexdiag] + transposescore(currentxchar, currentychar),
+						dpmatrix[currentindex])
+				}
+			}
+
+			if DEBUG_PRINT_MATRIX == 1 {
+				if ((x == 0) || (y == 0)) {
+					if ((x == 0) && (y == 0)) {
+						fmt.Printf("  ");
+					}
+					if ((x != 0) && (y == 0)) {
+						fmt.Printf("__%v ", currentxchar);
+					}
+					if ((x == 0) && (y != 0)) {
+						fmt.Printf("%v ", currentychar);
+					}
+				} else {
+					fmt.Printf("%3d ", dpmatrix[currentindex]);
+				}
+			}
+		}
+		if DEBUG_PRINT_MATRIX == 1 { fmt.Println() }
+	}
+	return dpmatrix
+}
+
+func backTrack(dpmatrix []int, xsize int, ysize int, word string) float64 {
 	return 1.0
 }
 
 func score(wordA string, wordB string) float64 {
-	return 1.0
+	// add one to each dimension for the padding row/collumn
+	xsize := len([]rune(wordA)) + 1
+	ysize := len([]rune(wordB)) + 1
+	dpmatrix := fillMatrix(xsize, ysize, wordA, wordB)
+	btresults := backTrack(dpmatrix, xsize, ysize, wordA)
+	if DEBUG_PRINT_SCORES == 1 { fmt.Printf("score: %#v %#v\n", btresults, wordB) }
+	return btresults;
 }
 
-func bestmatch(word string, wordList []string) string {
+func bestMatch(word string, wordList []string) string {
 	sfactor := 0.0
 	dpscore := 0.0
 	tmpscore := 0.0
 	maxscore := 0.0
-	wordmatch := "";
-
+	wordmatch := ""
 	for i := 0; i < len(wordList); i++ {
-		sfactor = scorefactor(word, wordList[i]);
-		dpscore = score(word, wordList[i]);
-		tmpscore = dpscore * sfactor;
-		if (tmpscore >= maxscore) {
-			wordmatch = wordList[i]
-			maxscore = tmpscore;
+		if len(wordList[i]) > 0 {
+			sfactor = scoreFactor(word, wordList[i])
+			dpscore = score(word, wordList[i])
+			tmpscore = dpscore * sfactor
+			if (tmpscore >= maxscore) {
+				wordmatch = wordList[i]
+				maxscore = tmpscore
+			}
 		}
 	}
-
 	return wordmatch
 }

@@ -34,46 +34,114 @@
 
 package main
 
-import (
-	"flag"
-	"fmt"
-	"io/ioutil"
-	"os"
-	"strings"
-)
-
-func check(e error) {
-	if e != nil {
-		panic(e)
+func max(a int, b int) int {
+	if (a > b) {
+		return a;
+	} else {
+		return b;
 	}
 }
 
-func main() {
-	showVersion := flag.Bool("version", false, "Version information")
-	flag.Parse()
-	// var spellWords string = flag.Args()
-	// above is the same as below, type is inferred
-	spellWords := flag.Args()
-
-	if *showVersion {
-		fmt.Println("spell 0.1");
-		fmt.Println("Copyright 2017, Christopher Stoll");
-		fmt.Println("https://github.com/stollcri/spell");
-		os.Exit(0)
+func max3(a int, b int, c int) int {
+	if (a > b) {
+		if (a > c) {
+			return a;
+		} else {
+			return c;
+		}
+	} else {
+		if (b > c) {
+			return b;
+		} else {
+			return c;
+		}
 	}
+}
 
-	configFile := ".spell"
-	if os.Getenv("SPELL_FILE") != "" {
-		configFile = os.Getenv("SPELL_FILE")
+func max4(a int, b int, c int, d int) int {
+	if (a > b) {
+		if (a > c) {
+			if (a > d) {
+				return a;
+			} else {
+				return d;
+			}
+		} else {
+			if (c > d) {
+				return c;
+			} else {
+				return d;
+			}
+		}
+	} else {
+		if (b > c) {
+			if (b > d) {
+				return b;
+			} else {
+				return d;
+			}
+		} else {
+			if (c > d) {
+				return c;
+			} else {
+				return d;
+			}
+		}
 	}
-	dat, err := ioutil.ReadFile(configFile)
-	check(err)
-	wordList := strings.Split(string(dat), "\n")
+}
 
-	for i := 0; i < len(spellWords); i++ {
-		recomendedString := bestMatch(spellWords[i], wordList)
-		fmt.Println(recomendedString)
+func min(a int, b int) int {
+	if (a < b) {
+		return a;
+	} else {
+		return b;
 	}
+}
 
-	os.Exit(0)
+func min3(a int, b int, c int) int {
+	if (a < b) {
+		if (a < c) {
+			return a;
+		} else {
+			return c;
+		}
+	} else {
+		if (b < c) {
+			return b;
+		} else {
+			return c;
+		}
+	}
+}
+
+func min4(a int, b int, c int, d int) int {
+	if (a < b) {
+		if (a < c) {
+			if (a < d) {
+				return a;
+			} else {
+				return d;
+			}
+		} else {
+			if (c < d) {
+				return c;
+			} else {
+				return d;
+			}
+		}
+	} else {
+		if (b < c) {
+			if (b < d) {
+				return b;
+			} else {
+				return d;
+			}
+		} else {
+			if (c < d) {
+				return c;
+			} else {
+				return d;
+			}
+		}
+	}
 }

@@ -7,9 +7,11 @@ GOC = go build
 
 CFLAGS = -race
 AOFILE = ./bin/spell
+CFILES = spell.go dp.go libMinMax.go
 
 CFLAGS_DBG = -race
 AOFILE_DBG = $(AOFILE)
+CFILES_DBG = $(CFILES)
 
 export GOPATH = $GOPATH:$(pwd)
 
@@ -20,14 +22,15 @@ test: debug run
 
 debug:
 	@mkdir -p ./bin/
-	$(GOC) $(CFLAGS_DBG) -o $(AOFILE_DBG)
+	$(GOC) $(CFLAGS_DBG) -o $(AOFILE_DBG) $(CFILES_DBG)
 
 run:
-	time bin/spell synthesis Pokémon
+	# time bin/spell synthesis Pokémon
+	time bin/spell Pokémon
 
 spell:
 	@mkdir -p ./bin/
-	$(GOC) $(CFLAGS) -o $(AOFILE)
+	$(GOC) $(CFLAGS) -o $(AOFILE) $(CFILES)
 
 install:
 	cp bin/spell /usr/local/bin/spell
