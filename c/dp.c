@@ -45,7 +45,7 @@ static int similarityscore(char charx, char chary)
 {
 // 9 -- same value
 // 8 -- difference in case (e.g. a, A -or- b, B)
-// 7 -- 
+// 7 --
 // 6 -- next to on the keyboard (e.g. q, w -or- q, a)
 // 5 -- looks similar (e.g. 1, l, I -or- 0, o, O)
 // 4 -- diagonal on the keyboard (e.g. a, z -or- s, x)
@@ -229,7 +229,7 @@ static int fillmatrix(int *dpmatrix, int xsize, int ysize, char *xstring, char *
 				indexdiag = ((y - 1) * xsize) + (x - 1);
 				indexleft = (y * xsize) + (x - 1);
 				indexabove = ((y - 1) * xsize) + x;
-				
+
 				// the value of the current pixels is:
 				// - the maximum of:
 				//   - the diagonal value and the current score (there is a series of matches)
@@ -281,13 +281,11 @@ static int fillmatrix(int *dpmatrix, int xsize, int ysize, char *xstring, char *
 	return result;
 }
 
-static struct backtrackresults *backtrack(int *dpmatrix, int xsize, int ysize, char *commandstring)
+static int backtrack(int *dpmatrix, int xsize, int ysize, char *commandstring)
 {
-	struct backtrackresults *results = (struct backtrackresults*)malloc(sizeof(struct backtrackresults));
-
 	// 1. Find the local maximum, in the bottom row or right column
 	//    This determines the starting point for the backtrack
-	
+
 	int localmax = 0;
 	int localmaxindex = 0;
 	int currentindex = 0;
@@ -316,10 +314,10 @@ static struct backtrackresults *backtrack(int *dpmatrix, int xsize, int ysize, c
 	}
 
 	// 2. Find the global maximum by backtracking from local max
-	
+
 	currentindex = localmaxindex;
 	int globalmax = localmax;
-	
+
 	int indexdiag = 0;
 	int indexleft = 0;
 	int indexabove = 0;
@@ -381,25 +379,11 @@ static struct backtrackresults *backtrack(int *dpmatrix, int xsize, int ysize, c
 		}
 	}
 
-	// 3. Find the argument portion of the given command string
-	
-	int argindex = 0;
-	char *commandargs = (char*)malloc((xsize - argumentxcut + 1) * sizeof(char));
-	for (int i = (xsize - (argumentxcut + 1)); i < xsize; ++i) {
-		commandargs[argindex] = commandstring[i];
-		++argindex;
-	}
-	commandargs[argindex] = '\0';
-	if (DEBUG_PRINT_ARGVAL) printf("===> '%s'\n", commandargs);
-
 	int scorepercent = (int)(((double)globalmax / (double)(xsize * EXPECTED_BOX_SCORE)) * 100);
-
-	results->commandargs = commandargs;
-	results->score = scorepercent;
-	return results;
+	return scorepercent;
 }
 
-static struct backtrackresults *dpscore(char *commandstring, char *possibility)
+static int dpscore(char *commandstring, char *possibility)
 {
 	// add one to each dimension for the padding row/collumn
 	int xsize = strlen(commandstring) + 1;
@@ -407,10 +391,9 @@ static struct backtrackresults *dpscore(char *commandstring, char *possibility)
 	int *dpmatrix = (int*)calloc(xsize * ysize, sizeof(int));
 	fillmatrix(dpmatrix, xsize, ysize, commandstring, possibility);
 
-	struct backtrackresults *btresults;
-	btresults = backtrack(dpmatrix, xsize, ysize, commandstring);
+	int btresults = backtrack(dpmatrix, xsize, ysize, commandstring);
 
-	if (DEBUG_PRINT_SCORES) printf("%4d %s\n", btresults->score, possibility);
+	if (DEBUG_PRINT_SCORES) printf("%4d %s\n", btresults, possibility);
 
 	if(dpmatrix) {
 		free(dpmatrix);
@@ -424,7 +407,7 @@ char *buildcommand(char *commandstr, char *commandarg, int score)
 	int argsize = strlen(commandarg) + 1;
 	int newsize = (cmdsize + argsize + 1);
 	if (score < MINIMUM_GOOD_SCORE) {
-		newsize += 2; 
+		newsize += 2;
 	}
 	char *result = (char*)malloc(newsize * sizeof(char));
 	// int wildcardused = 0;
@@ -471,28 +454,19 @@ char *bestmatch(char *commandstring, char **possibilities, int possibilitycount)
 	float tmpscore = 0;
 	float maxscore = 0;
 	int maxscoreid = 0;
-	char *maxscoreargs = NULL;
-	struct backtrackresults *btresults = NULL;
+	int btresults = 0;
 
 	for (int i = 0; i < possibilitycount; ++i) {
 		sfactor = scorefactor(commandstring, possibilities[i]);
 		if (possibilities[i]) {
 			btresults = dpscore(commandstring, possibilities[i]);
-			if (btresults) {
-				tmpscore = btresults->score * sfactor;
-				if (tmpscore >= maxscore) {
-					maxscoreid = i;
-					maxscore = tmpscore;
-					maxscoreargs = btresults->commandargs;
-				}
-				free(btresults);
+			tmpscore = btresults * sfactor;
+			if (tmpscore >= maxscore) {
+				maxscoreid = i;
+				maxscore = tmpscore;
 			}
 		}
 	}
 
-	if (maxscoreargs) {
-		return buildcommand(possibilities[maxscoreid], maxscoreargs, maxscore);
-	} else {
-		return commandstring;
-	}
+	return possibilities[maxscoreid];
 }

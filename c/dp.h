@@ -52,11 +52,6 @@
 #define EXPECTED_BOX_SCORE 7
 #define MINIMUM_GOOD_SCORE 75
 
-struct backtrackresults {
-	int score;
-	char *commandargs;
-};
-
 extern char *bestmatch(char*, char**, int);
 
 #endif
