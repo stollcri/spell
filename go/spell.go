@@ -32,7 +32,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package main
+package spell
 
 import (
 	"flag"
@@ -46,10 +46,6 @@ func check(e error) {
 	if e != nil {
 		panic(e)
 	}
-}
-
-func bestmatch(word string, wordlist []string) string {
-	return word
 }
 
 func main() {
@@ -75,8 +71,8 @@ func main() {
 	wordList := strings.Split(string(dat), "\n")
 
 	for i := 0; i < len(spellWords); i++ {
-		recomendedstring := bestmatch(spellWords[i], wordList)
-		fmt.Println(recomendedstring)
+		recomendedString := bestmatch(spellWords[i], wordList)
+		fmt.Println(recomendedString)
 	}
 
 	os.Exit(0)

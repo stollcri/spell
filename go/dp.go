@@ -31,3 +31,53 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+package spell
+
+import (
+)
+
+var DEBUG_PRINT_MATRIX int = 0
+var DEBUG_PRINT_ARGPOS int = 0
+var DEBUG_PRINT_ARGVAL int = 0
+var DEBUG_PRINT_SCORES int = 0
+
+var MOVE_COST int = 0
+var SCORE_MATCH int = 10
+var SCORE_WILDCARDint =  8
+var SCORE_MISMATCH int = -4
+var SCORE_SIMILARITY int = -2
+var PENALTY_GAP int = -3
+var PENALTY_MISMATCH int = -5
+var PENALTY_TRANSPOSE int = -2
+
+var EXPECTED_BOX_SCORE int =  7
+var MINIMUM_GOOD_SCORE int = 75
+
+func scorefactor(wordA string, wordB string) float64 {
+	return 1.0
+}
+
+func score(wordA string, wordB string) float64 {
+	return 1.0
+}
+
+func bestmatch(word string, wordList []string) string {
+	sfactor := 0.0
+	dpscore := 0.0
+	tmpscore := 0.0
+	maxscore := 0.0
+	wordmatch := "";
+
+	for i := 0; i < len(wordList); i++ {
+		sfactor = scorefactor(word, wordList[i]);
+		dpscore = score(word, wordList[i]);
+		tmpscore = dpscore * sfactor;
+		if (tmpscore >= maxscore) {
+			wordmatch = wordList[i]
+			maxscore = tmpscore;
+		}
+	}
+
+	return wordmatch
+}
