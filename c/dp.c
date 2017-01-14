@@ -435,18 +435,18 @@ char *buildcommand(char *commandstr, char *commandarg, int score)
 	// 	resultindex = 1;
 	// }
 	for (int cmdindex = 0; cmdindex < cmdsize; ++cmdindex) {
-		if (commandstr[cmdindex] != '*') {
+		// if (commandstr[cmdindex] != '*') {
 			result[resultindex] = commandstr[cmdindex];
 			++resultindex;
-		} else {
-			if (!wildcardused) {
-				wildcardused = 1;
-				for (int argindex = 0; argindex < argsize; ++argindex) {
-					result[resultindex] = commandarg[argindex];
-					++resultindex;
-				}
-			}
-		}
+		// } else {
+		// 	if (!wildcardused) {
+		// 		wildcardused = 1;
+		// 		for (int argindex = 0; argindex < argsize; ++argindex) {
+		// 			result[resultindex] = commandarg[argindex];
+		// 			++resultindex;
+		// 		}
+		// 	}
+		// }
 	}
 	result[resultindex] = '\0';
 	return result;

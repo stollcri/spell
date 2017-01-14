@@ -1,6 +1,6 @@
 .DS_Store
 *.xcuserstate
 
-spell/dbg
-spell/bin/spell.dSYM
-spell/tst/out/20*
+c/dbg
+c/bin/spell.dSYM
+c/tst/out/20*
