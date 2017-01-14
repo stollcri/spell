@@ -383,7 +383,7 @@ static int backtrack(int *dpmatrix, int xsize, int ysize, char *commandstring)
 	return scorepercent;
 }
 
-static int dpscore(char *commandstring, char *possibility)
+static int score(char *commandstring, char *possibility)
 {
 	// add one to each dimension for the padding row/collumn
 	int xsize = strlen(commandstring) + 1;
@@ -425,7 +425,7 @@ char *bestmatch(char *commandstring, char **possibilities, int possibilitycount)
 	for (int i = 0; i < possibilitycount; ++i) {
 		sfactor = scorefactor(commandstring, possibilities[i]);
 		if (possibilities[i]) {
-			btresults = dpscore(commandstring, possibilities[i]);
+			btresults = score(commandstring, possibilities[i]);
 			tmpscore = btresults * sfactor;
 			if (tmpscore >= maxscore) {
 				maxscoreid = i;
