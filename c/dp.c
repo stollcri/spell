@@ -427,7 +427,7 @@ char *buildcommand(char *commandstr, char *commandarg, int score)
 		newsize += 2; 
 	}
 	char *result = (char*)malloc(newsize * sizeof(char));
-	int wildcardused = 0;
+	// int wildcardused = 0;
 
 	int resultindex = 0;
 	// if (score < MINIMUM_GOOD_SCORE) {

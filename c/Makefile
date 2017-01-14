@@ -6,12 +6,10 @@
 CC = cc
 
 CFLAGS = -O3 -Wall -D NDEBUG -Wall
-LFLAGS = -l ncurses
 AOFILE = ./bin/spell
 CFILES = spell.c dp.c
 
 CFLAGS_DBG = -O0 -g -Wall
-LFLAGS_DBG = -l ncurses
 AOFILE_DBG = ./bin/spell
 CFILES_DBG = $(CFILES)
 
@@ -26,11 +24,10 @@ endif
 
 default: test
 test: debug run
-testall: debug run-test
 
 debug:
 	@mkdir -p ./bin/
-	$(CC) $(CFLAGS_DBG) $(LFLAGS_DBG) -o $(AOFILE_DBG) $(CFILES_DBG)
+	$(CC) $(CFLAGS_DBG) -o $(AOFILE_DBG) $(CFILES_DBG)
 
 analysis:
 	echo "Variables should be checked for null after *alloc ... check the following ..."
@@ -47,15 +44,14 @@ findtrouble:
 	grep -inR -e strcpy\( -e strcat\( -e scanf\( -e gets\( .
 
 run:
-	# time bin/spell synthesis
-	bin/spell synthesis
+	time bin/spell synthesis
 
 clean:
 	rm -r tst/out/20*
 
 spell:
 	@mkdir -p ./bin/
-	$(CC) $(CFLAGS) $(LFLAGS) -o $(AOFILE) $(CFILES)
+	$(CC) $(CFLAGS) -o $(AOFILE) $(CFILES)
 
 install:
 	cp bin/spell /usr/local/bin/spell
