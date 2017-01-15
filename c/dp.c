@@ -41,7 +41,9 @@
 
 #include <stdio.h>
 
-static int similarityscore(char charx, char chary)
+static char *charmatrix[93];
+
+static void initcharmatrix()
 {
 // 9 -- same value
 // 8 -- difference in case (e.g. a, A -or- b, B)
@@ -53,7 +55,6 @@ static int similarityscore(char charx, char chary)
 // 2 -- difference in shift state (e.g. 1, ! -or- 2, @)
 // 1 -- looks close (e.g. t, f -or- B, D)
 // 0 -- no similarity
-char *charmatrix[93];
 //                !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}
  charmatrix[0] = "900000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000"; // !
  charmatrix[1] = "090000800000000000000000000000000000000000000000000000000000000800000000000000000000000000000"; // "
@@ -148,7 +149,10 @@ charmatrix[89] = "00000000000000000000000000000000000000000000000000000000080000
 charmatrix[90] = "000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000900"; // {
 charmatrix[91] = "000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000090"; // |
 charmatrix[92] = "000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000009"; // ]
+}
 
+static int similarityscore(char charx, char chary)
+{
 	int charxpos = charx - (32 + 1);
 	if ((charxpos >= 0) && (charxpos <= 92)) {
 		int charypos = chary - (32 + 1);
@@ -423,6 +427,8 @@ float scorefactor(char *stringa, char *stringb)
 
 char *bestmatch(char *commandstring, char **possibilities, int possibilitycount)
 {
+	initcharmatrix();
+
 	float sfactor = 0;
 	float tmpscore = 0;
 	float maxscore = 0;
