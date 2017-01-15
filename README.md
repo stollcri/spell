@@ -21,6 +21,12 @@ $ spell qwerty
 sweety
 ```
 
+A rediculous method for generating random words
+
+```
+./bin/spell $(cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z' | fold -w 8 | head -n 1)
+```
+
 ## TODO
 
 - allow for multiple words to be returned
