@@ -337,20 +337,27 @@ static int backtrack(int *dpmatrix, int xsize, int ysize, char *commandstring)
 		indexabove = currentindex - xsize;
 		indexdiag = indexabove - 1;
 		// make sure we don't go outside the matrix bounds
-		if (indexleft > 0) {
-			valueleft = dpmatrix[indexleft];
-		} else {
+		valuediag = 0;
+		if ((indexleft < 0) || (indexabove < 0) || (indexdiag < 0)) {
 			valueleft = INT_MIN;
-		}
-		if (indexabove > 0) {
-			valueabove = dpmatrix[indexabove];
-		} else {
 			valueabove = INT_MIN;
-		}
-		if (indexdiag > 0) {
-			valuediag = dpmatrix[indexdiag];
-		} else {
 			valuediag = INT_MIN;
+		} else {
+			if (indexleft % xsize != 0) {
+				valueleft = dpmatrix[indexleft];
+			} else {
+				valueleft = INT_MIN;
+				valuediag = INT_MIN;
+			}
+			if (indexabove > xsize) {
+				valueabove = dpmatrix[indexabove];
+			} else {
+				valueabove = INT_MIN;
+				valuediag = INT_MIN;
+			}
+			if (valuediag != INT_MIN) {
+				valuediag = dpmatrix[indexdiag];
+			}
 		}
 
 		// no equals, so biased up (ties hit else)
@@ -379,7 +386,7 @@ static int backtrack(int *dpmatrix, int xsize, int ysize, char *commandstring)
 		}
 	}
 
-	int scorepercent = (int)(((double)globalmax / (double)(xsize * EXPECTED_BOX_SCORE)) * 100);
+	int scorepercent = (int)(((double)globalmax / (double)(xsize * ysize)) * 100);
 	return scorepercent;
 }
 
