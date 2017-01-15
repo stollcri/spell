@@ -25,8 +25,7 @@ debug:
 	$(GOC) $(CFLAGS_DBG) -o $(AOFILE_DBG) $(CFILES_DBG)
 
 run:
-	# time bin/spell synthesis Pokémon
-	time bin/spell Pokémon
+	time bin/spell synthesis Pokémon
 
 spell:
 	@mkdir -p ./bin/
