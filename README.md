@@ -13,18 +13,33 @@ $ spell asdasdfsadk
 sassafrack
 $ spell asdfasdf
 headfast
+$ spell diplococus
+diplodocus
 $ spell gfkjhgjkj
 dogfought
 $ spell lksdjfoij
 ladyflies
+$ spell scichiatrist
+psychiatrist
 $ spell qwerty
-sweety
+wefty
 ```
 
-A rediculous method for generating random words
+A rediculous method for generating random words near a certain length
 
 ```
-./bin/spell $(cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z' | fold -w 8 | head -n 1)
+spell $(cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z' | fold -w 8 | head -n 1)
+```
+
+```
+$ spell $(cat /dev/random | env LC_CTYPE=C tr -dc 'a-zA-Z' | fold -w 6 | head -n 1)
+biogen
+$ spell $(cat /dev/random | env LC_CTYPE=C tr -dc 'a-zA-Z' | fold -w 8 | head -n 1)
+studfish
+$ spell $(cat /dev/random | env LC_CTYPE=C tr -dc 'a-zA-Z' | fold -w 10 | head -n 1)
+battycake
+$ spell $(cat /dev/random | env LC_CTYPE=C tr -dc 'a-zA-Z' | fold -w 12 | head -n 1)
+hurtlessness
 ```
 
 ## TODO
