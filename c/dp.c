@@ -390,7 +390,7 @@ static int backtrack(int *dpmatrix, int xsize, int ysize, char *commandstring)
 		}
 	}
 
-	int scorepercent = (int)(((double)globalmax / (double)(xsize * ysize)) * 100);
+	int scorepercent = (int)(((double)globalmax / (double)(max(xsize, ysize)) * 10) * 100);
 	return scorepercent;
 }
 
@@ -414,6 +414,8 @@ static int score(char *commandstring, char *possibility)
 
 float scorefactor(char *stringa, char *stringb)
 {
+	return 1;
+
 	float result = 0;
 	float lenga = strlen(stringa);
 	float lengb = strlen(stringb);
