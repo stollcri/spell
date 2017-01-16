@@ -2,11 +2,12 @@ defmodule Elixir.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :elixir,
+    [app: :spell,
      version: "0.1.0",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     escript: [main_module: Spell],
      deps: deps()]
   end
 

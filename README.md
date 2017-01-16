@@ -64,6 +64,10 @@ This is becoming the repository I use to evaluate how well languages can handle 
 
 This is a work in progress.
 
+#### Installation
+
+Erlang must be installed to run the executable
+
 ### Go Version
 
 tldr: for all intents and purposes it doesn't work
