@@ -13,7 +13,16 @@ defmodule Spell do
 
   """
   def main(args) do
-    args |> parse_args |> process
+    args
+    |> parse_args
+    |> process
+  end
+
+  defp parse_args(args) do
+    {_, options, _} = OptionParser.parse(args,
+      switches: [name: :string]
+    )
+    options
   end
 
   def process([]) do
@@ -21,17 +30,6 @@ defmodule Spell do
   end
 
   def process(options) do
-    # IO.puts "Hello #{options[:name]}"
-    IO.puts "Hello #{options[1]}"
-  end
-
-  defp parse_args(args) do
-    # {options, _, _} = OptionParser.parse(args,
-    #   switches: [name: :string]
-    # )
-    {_, options, _} = OptionParser.parse(args,
-      switches: [name: :string]
-    )
-    options
+    for option <- options, do: IO.puts "#{option}"
   end
 end

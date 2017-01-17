@@ -1,8 +1,11 @@
-defmodule Elixir.Mixfile do
+defmodule Spell.Mixfile do
   use Mix.Project
 
   def project do
     [app: :spell,
+     name: "spell",
+     source_url: "https://github.com/stollcri/spell",
+     description: "Find the word that most closely matches a string of characters",
      version: "0.1.0",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
