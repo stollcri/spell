@@ -18,11 +18,14 @@ export GOPATH = $GOPATH:$(pwd)
 .PHONY: default spell test debug run install
 
 default: test
-test: debug run
+test: debug run-debug
 
 debug:
 	@mkdir -p ./bin/
 	$(GOC) $(CFLAGS_DBG) -o $(AOFILE_DBG) $(CFILES_DBG)
+
+run-debug:
+	GOGCTRACE=1 go run $(CFILES_DBG) synthesis Pokémon
 
 run:
 	time bin/spell synthesis Pokémon

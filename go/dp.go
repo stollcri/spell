@@ -440,26 +440,37 @@ func score(wordA string, wordB string, finalScore chan wordScore) {
 
 func bestMatch(word string, wordList []string) string {
 	initCharMatrix()
-	scores := make(chan wordScore, 8)
+	scores := make(chan wordScore, 2)
 	currentScore := wordScore{}
 	maxScore := 0.0
 	wordMatch := ""
-	garbageCollectCounter := 0
+	concurrentCount := 4
+	wordsThisItteration := 0
 	fmt.Println()
-	for i := 0; i < len(wordList); i++ {
-		garbageCollectCounter++
-		if len(wordList[i]) > 0 {
-			go score(word, wordList[i], scores)
+	var m runtime.MemStats
+	for i := 0; i < (len(wordList)-(concurrentCount-1)); i+=concurrentCount {
+		wordsThisItteration = 0
+		for j := 0; j < concurrentCount; j++ {
+			if len(wordList[i+j]) > 0 {
+				go score(word, wordList[i+j], scores)
+				wordsThisItteration++
+			}
 		}
-		currentScore = <-scores
-		fmt.Printf("%9.5f %#v \n", currentScore.score, currentScore.word)
-		if (currentScore.score >= maxScore) {
-			maxScore = currentScore.score
-			wordMatch = currentScore.word
+
+		for k := 0; k < wordsThisItteration; k++ {
+			currentScore = <-scores
+			if (currentScore.score >= maxScore) {
+				maxScore = currentScore.score
+				wordMatch = currentScore.word
+			}
+			if ((i + k) % 512) == 0 {
+				// fmt.Printf("%9.5f %#v \n", currentScore.score, currentScore.word)
+				runtime.ReadMemStats(&m)
+				fmt.Printf("%d,%d,%d,%d %9.5f %#v \n", m.HeapSys, m.HeapAlloc, m.HeapIdle, m.HeapReleased, currentScore.score, currentScore.word)
+			}
 		}
-		if (garbageCollectCounter % 2) == 0 {
-			runtime.GC()
-		}
+
+		runtime.GC()
 	}
 	return word+" => <"+wordMatch+">"
 }
