@@ -428,27 +428,25 @@ func score(wordA string, wordB string) float64 {
 	ySize := len([]rune(wordB)) + 1
 	dpMatrix := fillMatrix(xSize, ySize, wordA, wordB)
 	btResults := backTrack(dpMatrix, xSize, ySize, wordA)
+	sFactor := scoreFactor(wordA,wordB)
+	finalScore := btResults * sFactor
 	if DEBUG_PRINT_SCORES == 1 { fmt.Printf("score: %#v %#v\n", btResults, wordB) }
-	return btResults
+	return finalScore
 }
 
 func bestMatch(word string, wordList []string) string {
 	initCharMatrix()
-	sFactor := 0.0
-	dpScore := 0.0
-	tmpScore := 0.0
+	wordScore := 0.0
 	maxScore := 0.0
 	wordMatch := ""
 	garbageCollectCounter := 0
 	for i := 0; i < len(wordList); i++ {
 		garbageCollectCounter++
 		if len(wordList[i]) > 0 {
-			sFactor = scoreFactor(word, wordList[i])
-			dpScore = score(word, wordList[i])
-			tmpScore = dpScore * sFactor
-			if (tmpScore >= maxScore) {
+			wordScore = score(word, wordList[i])
+			if (wordScore >= maxScore) {
 				wordMatch = wordList[i]
-				maxScore = tmpScore
+				maxScore = wordScore
 			}
 			if (garbageCollectCounter % 2) == 0 {
 				runtime.GC()
