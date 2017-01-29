@@ -60,6 +60,11 @@ var MINIMUM_GOOD_SCORE int = 75
 
 var CHAR_MARIX [93]string
 
+type wordScore struct {
+    word string
+    score float64
+}
+
 func initCharMatrix() {
 // 9 -- same value
 // 8 -- difference in case (e.g. a, A -or- b, B)
@@ -422,36 +427,39 @@ func backTrack(dpMatrix []int, xSize int, ySize int, word string) float64 {
 	return scorePercent
 }
 
-func score(wordA string, wordB string) float64 {
+func score(wordA string, wordB string, finalScore chan wordScore) {
 	// add one to each dimension for the padding row/collumn
 	xSize := len([]rune(wordA)) + 1
 	ySize := len([]rune(wordB)) + 1
 	dpMatrix := fillMatrix(xSize, ySize, wordA, wordB)
 	btResults := backTrack(dpMatrix, xSize, ySize, wordA)
 	sFactor := scoreFactor(wordA,wordB)
-	finalScore := btResults * sFactor
+	finalScore <- wordScore{wordB, btResults * sFactor}
 	if DEBUG_PRINT_SCORES == 1 { fmt.Printf("score: %#v %#v\n", btResults, wordB) }
-	return finalScore
 }
 
 func bestMatch(word string, wordList []string) string {
 	initCharMatrix()
-	wordScore := 0.0
+	scores := make(chan wordScore, 8)
+	currentScore := wordScore{}
 	maxScore := 0.0
 	wordMatch := ""
 	garbageCollectCounter := 0
+	fmt.Println()
 	for i := 0; i < len(wordList); i++ {
 		garbageCollectCounter++
 		if len(wordList[i]) > 0 {
-			wordScore = score(word, wordList[i])
-			if (wordScore >= maxScore) {
-				wordMatch = wordList[i]
-				maxScore = wordScore
-			}
-			if (garbageCollectCounter % 2) == 0 {
-				runtime.GC()
-			}
+			go score(word, wordList[i], scores)
+		}
+		currentScore = <-scores
+		fmt.Printf("%9.5f %#v \n", currentScore.score, currentScore.word)
+		if (currentScore.score >= maxScore) {
+			maxScore = currentScore.score
+			wordMatch = currentScore.word
+		}
+		if (garbageCollectCounter % 2) == 0 {
+			runtime.GC()
 		}
 	}
-	return wordMatch
+	return word+" => <"+wordMatch+">"
 }
