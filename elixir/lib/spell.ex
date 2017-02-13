@@ -19,7 +19,7 @@ defmodule Spell do
   end
 
   defp parse_args(args) do
-    {switches, options, _} = OptionParser.parse(args,
+    {_, options, _} = OptionParser.parse(args,
       switches: [name: :string]
     )
     options
@@ -33,7 +33,12 @@ defmodule Spell do
   end
 
   def process([], _) do end
-  def process(options, wordlist) do
-    for option <- options, do: Dp.bestmatch(option, wordlist)
+  def process(words, wordlist) do
+    for word <- words, do: find_match(word, String.split(wordlist, "\n"))
+  end
+
+  def find_match(word, wordlist) do
+    match = Dp.best_match(word, wordlist)
+    IO.puts "MATCH: #{match}"
   end
 end
